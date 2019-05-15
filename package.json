@@ -1,6 +1,6 @@
 {
     "name": "@fuzzco/fragment-shader",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Start drawing fragment shaders right away.",
     "main": "dist/fragment-shader.common.js",
     "scripts": {
