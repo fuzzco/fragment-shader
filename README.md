@@ -1,4 +1,4 @@
-Drop in a WebGL shader anywhere for <10kb.
+Drop in a WebGL shader anywhere for <10kb. [Demo](https://fuzzco.github.io/fragment-shader/)
 
 ## TODO
 
