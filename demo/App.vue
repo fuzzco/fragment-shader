@@ -1,8 +1,7 @@
 <template>
     <main class="class">
         <div class="single-shader">
-            <!-- Date.now() key allow live reload -->
-            <fragment-shader :key="Date.now()">
+            <fragment-shader :key="Date.now() + 1">
                 <script type="shader/fragment">
                     precision mediump float;
                     uniform vec2 uResolution;
@@ -10,8 +9,27 @@
 
                     void main() {
                         vec2 uv = gl_FragCoord.xy / uResolution.xy;
+                        gl_FragColor = vec4(uv.x, 0.2, 0.2, 1.);
+                    }
+                </script>
+            </fragment-shader>
+        </div>
+
+        <div class="single-shader">
+            <!-- Date.now() key allows live reload -->
+            <fragment-shader :key="Date.now()">
+                <script type="shader/fragment">
+                    precision mediump float;
+                    uniform vec2 uResolution;
+                    uniform float uTime;
+
+                    #include <snoise>
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / uResolution.xy;
                         uv.x *= uResolution.x / uResolution.y;
-                        gl_FragColor = vec4(uv.x / 2., 0., 0., 1.);
+                        vec4 color = vec4(vec3(1. - abs(snoise(uv + uTime * 0.2))), 1.);
+                        gl_FragColor = color;
                     }
                 </script>
             </fragment-shader>
@@ -41,6 +59,7 @@ export default {
         width: 300px;
         height: 300px;
         position: relative;
+        margin: 20px auto;
     }
 }
 </style>

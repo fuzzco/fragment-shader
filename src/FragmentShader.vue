@@ -2,13 +2,13 @@
     <div class="fragment-shader">
         <!-- the shader will go here -->
         <slot />
-
+        <!-- and the result will be drawn here -->
         <canvas class="canvas" ref="canvas" />
     </div>
 </template>
 
 <script>
-import Phenomenon from 'phenomenon-px'
+import snoise from './libs/snoise'
 
 export default {
     props: {
@@ -19,12 +19,26 @@ export default {
         render: {
             type: Function,
             default: () => () => {}
+        },
+        timescale: {
+            type: Number,
+            default: 1
+        }
+    },
+    data() {
+        return {
+            alive: true
         }
     },
     mounted() {
+        if (!window.shader) window.shader = 1
+
         // get the HTML of the first element in the default slot
         // to use as the shader
-        const fragment = this.$slots.default[0].elm.innerHTML
+        let fragment = this.$slots.default[0].elm.innerHTML
+
+        // include external functions
+        fragment = fragment.replace('#include <snoise>', snoise)
 
         // include time and resolution as default uniforms
         const uniforms = {
@@ -42,7 +56,7 @@ export default {
         // render function
         const render = ({ uTime, uResolution }) => {
             if (uTime) {
-                uTime.value += 0.2
+                uTime.value += 0.01666 * this.timescale
             }
             if (uResolution && this && this.$refs && this.$refs.canvas) {
                 uResolution.value = [
@@ -51,13 +65,18 @@ export default {
                 ]
             }
 
-            if (this.render) {
+            if (this.render && this.alive) {
                 this.render()
             }
         }
 
+        const Phenomenon = require('phenomenon-px').default
+
         // kick loop
         Phenomenon(fragment, uniforms, render, this.$refs.canvas)
+    },
+    beforeDestroy() {
+        this.alive = false
     }
 }
 </script>
