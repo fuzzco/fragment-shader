@@ -9,6 +9,7 @@
 
 <script>
 import snoise from './libs/snoise'
+import rotate2d from './libs/rotate2d'
 
 export default {
     props: {
@@ -39,9 +40,10 @@ export default {
 
         // include external functions
         fragment = fragment.replace('#include <snoise>', snoise)
+        fragment = fragment.replace('#include <rotate2d>', rotate2d)
 
         // include time and resolution as default uniforms
-        const uniforms = {
+        const startingUniforms = {
             uTime: {
                 type: 'float',
                 value: 1.0
@@ -54,26 +56,41 @@ export default {
         }
 
         // render function
-        const render = ({ uTime, uResolution }) => {
-            if (uTime) {
-                uTime.value += 0.01666 * this.timescale
+        const render = uniforms => {
+            if (uniforms.uTime) {
+                uniforms.uTime.value += 0.01666 * this.timescale
             }
-            if (uResolution && this && this.$refs && this.$refs.canvas) {
-                uResolution.value = [
+            if (
+                uniforms.uResolution &&
+                this &&
+                this.$refs &&
+                this.$refs.canvas
+            ) {
+                uniforms.uResolution.value = [
                     this.$refs.canvas.width,
                     this.$refs.canvas.height
                 ]
             }
 
+            // update passed uniforms each frame
+            if (this.uniforms) {
+                Object.keys(this.uniforms)
+                    .filter(Boolean)
+                    .forEach(u => {
+                        uniforms[u].value = this.uniforms[u].value
+                    })
+            }
+
+            // allow custom render function to be passed as prop
             if (this.render && this.alive) {
-                this.render()
+                this.render(uniforms)
             }
         }
 
         const Phenomenon = require('phenomenon-px').default
 
         // kick loop
-        Phenomenon(fragment, uniforms, render, this.$refs.canvas)
+        Phenomenon(fragment, startingUniforms, render, this.$refs.canvas)
     },
     beforeDestroy() {
         this.alive = false
