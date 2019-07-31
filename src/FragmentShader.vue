@@ -10,6 +10,7 @@
 <script>
 import snoise from './libs/snoise'
 import rotate2d from './libs/rotate2d'
+import phenom from './libs/phenom-px'
 
 export default {
     props: {
@@ -87,10 +88,16 @@ export default {
             }
         }
 
-        const Phenomenon = require('phenomenon-px').default
+        const Phenomenon = require('phenomenon').default
 
         // kick loop
-        Phenomenon(fragment, startingUniforms, render, this.$refs.canvas)
+        phenom(
+            Phenomenon,
+            fragment,
+            startingUniforms,
+            render,
+            this.$refs.canvas
+        )
     },
     beforeDestroy() {
         this.alive = false

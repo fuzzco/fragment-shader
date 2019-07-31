@@ -3,7 +3,7 @@
         <div class="single-shader">
             <fragment-shader :key="Date.now()">
                 <script type="shader/fragment">
-                    precision mediump float;
+                    precision highp float;
                     uniform vec2 uResolution;
                     uniform float uTime;
 
@@ -19,7 +19,7 @@
             <!-- Date.now() key allows live reload -->
             <fragment-shader :key="Date.now() + 1">
                 <script type="shader/fragment">
-                    precision mediump float;
+                    precision highp float;
                     uniform vec2 uResolution;
                     uniform float uTime;
 
@@ -39,7 +39,7 @@
             <!-- Date.now() key allows live reload -->
             <fragment-shader :key="Date.now() + 2">
                 <script type="shader/fragment">
-                    precision mediump float;
+                    precision highp float;
                     uniform vec2 uResolution;
                     uniform float uTime;
 
