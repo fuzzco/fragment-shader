@@ -25,6 +25,14 @@ export default {
         timescale: {
             type: Number,
             default: 1
+        },
+        min: {
+            type: Number,
+            default: -100
+        },
+        max: {
+            type: Number,
+            default: 100
         }
     },
     data() {
@@ -96,7 +104,9 @@ export default {
             fragment,
             startingUniforms,
             render,
-            this.$refs.canvas
+            this.$refs.canvas,
+            this.min,
+            this.max
         )
     },
     beforeDestroy() {

@@ -1,9 +1,7 @@
 // This is a modified version of the phenomenon-px package
 // The main difference is that you need to pass in the Phenomenon class
-const min = -2
-const max = 2
 
-export default function(phenom, fragment, uniforms, render, canvas) {
+export default function(phenom, fragment, uniforms, render, canvas, min, max) {
     new phenom({ canvas, position: { x: 0, y: 0, z: 100 } }).add(Date.now(), {
         vertex: `
       attribute vec3 aPosition;
