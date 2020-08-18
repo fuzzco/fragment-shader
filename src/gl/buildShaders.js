@@ -24,25 +24,7 @@ export default function(gl, vsSource, fsSource) {
         return null
     }
 
-    return {
-        program: shaderProgram,
-        attribLocations: {
-            vertexPosition: gl.getAttribLocation(
-                shaderProgram,
-                'aVertexPosition'
-            )
-        },
-        uniformLocations: {
-            projectionMatrix: gl.getUniformLocation(
-                shaderProgram,
-                'uProjectionMatrix'
-            ),
-            modelViewMatrix: gl.getUniformLocation(
-                shaderProgram,
-                'uModelViewMatrix'
-            )
-        }
-    }
+    return shaderProgram
 }
 
 //

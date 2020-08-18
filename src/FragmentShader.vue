@@ -34,11 +34,18 @@ export default {
     },
     data() {
         return {
-            gl: null
+            gl: null,
+            shaderProgram: {},
+            canvas: null,
+            builtUniforms: {},
+            lastTime: Date.now(),
+            time: 0
         }
     },
     methods: {
         initializeCanvas(canvas) {
+            this.canvas = canvas
+
             // we will:
             // 1. initialize the canvas webgl context
             // 2. build our shaders
@@ -65,20 +72,79 @@ export default {
             let vertex = get(vertexVNode, 'elm.innerHTML', null)
 
             // build the desired shaders
-            const programInfo = buildShaders(
+            this.shaderProgram = buildShaders(
                 this.gl,
                 vertex || defaultVertex,
                 fragment || defaultFragment
             )
 
             // build the plane where we'll render our shaders
-            buildPlane(gl, programInfo)
+            // buildP1lane(this.gl, this.programInfo)
 
             // kick render loop
             this.render()
         },
         render() {
             console.log('render')
+            this.time = Date.now() - this.lastTime
+            this.lastTime = Date.now()
+
+            // build uniforms
+            // const toBuild = {
+            //     uTime: {
+            //         type: 'float',
+            //         value: this.time
+            //     },
+            //     uResolution: {
+            //         type: 'vec2',
+            //         value: [this.canvas.width, this.canvas.height]
+            //     },
+            //     ...this.uniforms
+            // }
+            //
+            // Object.keys(this.programInfo.uniformLocations).map(key => {
+            //     const uni = toBuild[key]
+            //     // this.gl[]
+            // })
+
+            buildPlane(this.gl, this.programInfo)
+
+            requestAnimationFrame(this.render)
+        }
+    },
+    computed: {
+        uniformMap() {
+            // from phenomenon - https://github.com/vaneenige/phenomenon/blob/master/src/index.ts
+            return {
+                float: (loc, val) => this.gl.uniform1f(loc, val),
+                vec2: (loc, val) => this.gl.uniform2fv(loc, val),
+                vec3: (loc, val) => this.gl.uniform3fv(loc, val),
+                vec4: (loc, val) => this.gl.uniform4fv(loc, val),
+                mat2: (loc, val) => this.gl.uniformMatrix2fv(loc, false, val),
+                mat3: (loc, val) => this.gl.uniformMatrix3fv(loc, false, val),
+                mat4: (loc, val) => this.gl.uniformMatrix4fv(loc, false, val)
+            }
+        },
+        programInfo() {
+            return {
+                program: this.shaderProgram,
+                attribLocations: {
+                    vertexPosition: this.gl.getAttribLocation(
+                        this.shaderProgram,
+                        'aVertexPosition'
+                    )
+                },
+                uniformLocations: {
+                    projectionMatrix: this.gl.getUniformLocation(
+                        this.shaderProgram,
+                        'uProjectionMatrix'
+                    ),
+                    modelViewMatrix: this.gl.getUniformLocation(
+                        this.shaderProgram,
+                        'uModelViewMatrix'
+                    )
+                }
+            }
         }
     }
 }
