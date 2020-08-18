@@ -2,7 +2,6 @@ import * as mat4 from '../gl-matrix/mat4'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context
 export default function(gl, programInfo) {
-
     const buffers = initBuffers(gl)
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
@@ -81,12 +80,6 @@ export default function(gl, programInfo) {
         false,
         modelViewMatrix
     )
-
-    {
-        const offset = 0
-        const vertexCount = 4
-        gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount)
-    }
 }
 
 function initBuffers(gl) {

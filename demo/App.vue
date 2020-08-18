@@ -5,6 +5,21 @@
                 <script type="shader/fragment">
                     precision highp float;
                     uniform vec2 uResolution;
+                    uniform sampler2D uImage;
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+                        gl_FragColor = texture2D(uImage, uv);
+                    }
+                </script>
+            </fragment-shader>
+        </div>
+
+        <div class="single-shader">
+            <fragment-shader :uniforms="imageUniforms">
+                <script type="shader/fragment">
+                    precision highp float;
+                    uniform vec2 uResolution;
 
                     void main() {
                         vec2 uv = gl_FragCoord.xy / uResolution.xy;
@@ -64,6 +79,17 @@ import FragmentShader from '../src/FragmentShader'
 export default {
     components: {
         'fragment-shader': FragmentShader
+    },
+    computed: {
+        imageUniforms() {
+            return {
+                uImage: {
+                    type: 'image',
+                    value:
+                        'https://images.prismic.io/flores/8779cd82-4868-43c3-86b9-b83e934dce69_Center.jpg?auto=compress,format&rect=0,0,1920,1080&w=1920&h=1080'
+                }
+            }
+        }
     }
 }
 </script>

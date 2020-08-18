@@ -23,6 +23,7 @@ import {
 } from './libs/defaultShaders'
 import buildShaders from './gl/buildShaders'
 import buildPlane from './gl/buildPlane'
+import loadTexture from './gl/load-texture'
 
 export default {
     components: { 'full-canvas': FullCanvas },
@@ -39,7 +40,10 @@ export default {
             canvas: null,
             builtUniforms: {},
             lastTime: Date.now(),
-            time: 0
+            time: 0,
+
+            // image loading
+            textures: {}
         }
     },
     methods: {
@@ -82,8 +86,45 @@ export default {
             this.render()
         },
         render() {
+            // update time
             this.time += Date.now() - this.lastTime
             this.lastTime = Date.now()
+
+            // prep to load images
+            const images = {}
+
+            // filter out images
+            const nonImageUniforms = Object.keys(this.uniforms || {}).reduce(
+                (acc, curr) => {
+                    const uni = this.uniforms[curr]
+                    if (uni.type === 'image') {
+                        images[curr] = uni
+                    } else {
+                        acc[curr] = uni
+                    }
+
+                    return acc
+                },
+                {}
+            )
+
+            // load unloaded images
+            const loadedImages = Object.keys(images).reduce((acc, curr) => {
+                const target = images[curr]
+
+                if (!this.textures[target.value]) {
+                    const texture = this.loadTexture(target.value, this.gl)
+                    this.textures[target.value] = texture
+                }
+
+                acc[curr] = {
+                    type: '1i',
+                    value: 0,
+                    url: target.value
+                }
+
+                return acc
+            }, {})
 
             // build uniforms
             const toBuild = {
@@ -95,31 +136,53 @@ export default {
                     type: 'vec2',
                     value: [this.canvas.width, this.canvas.height]
                 },
-                ...this.uniforms
+                ...loadedImages,
+                ...nonImageUniforms
             }
-
-            Object.keys(toBuild).map(key => {
-                const uni = toBuild[key]
-                const uniformValueSetFunction =
-                    this.uniformMap[uni.type] ||
-                    this.gl[`uniform${uni.type}`] ||
-                    this.gl[uni.type]
-
-                if (!uniformValueSetFunction) {
-                    console.warn(`No uniform method for type ${uni.type}`)
-                    return
-                }
-
-                uniformValueSetFunction(
-                    this.gl.getUniformLocation(this.shaderProgram, key),
-                    uni.value
-                )
-            })
 
             buildPlane(this.gl, this.programInfo)
 
+            Object.keys(toBuild).map(key => {
+                const uni = toBuild[key]
+
+                const args = [
+                    this.gl.getUniformLocation(this.shaderProgram, key),
+                    uni.value
+                ]
+
+                if (uni.url) {
+                    this.gl.activeTexture(this.gl.TEXTURE0)
+
+                    // Bind the texture to texture unit 0
+                    this.gl.bindTexture(
+                        this.gl.TEXTURE_2D,
+                        this.textures[uni.url]
+                    )
+                    // TODO: start here - can't find location of `key`
+                    console.log(
+                        this.gl.getUniformLocation(this.shaderProgram, key)
+                    )
+                    this.gl.uniform1i(args[1], 0)
+                }
+
+                if (this.uniformMap[uni.type]) {
+                    this.uniformMap[uni.type](...args)
+                } else {
+                    this.gl[`uniform${uni.type}`](...args)
+                }
+
+                // if (!uniformValueSetFunction) {
+                //     console.warn(`No uniform method for type ${uni.type}`)
+                //     return
+                // }
+                // console.log(uniformValueSetFunction)
+            })
+
+            this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4)
+
             requestAnimationFrame(this.render)
-        }
+        },
+        loadTexture
     },
     computed: {
         uniformMap() {
