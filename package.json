@@ -29,6 +29,7 @@
         "gl-matrix": "3.3.0",
         "imagesloaded": "^4.1.4",
         "is-obj": "2.0.0",
+        "lodash": "4.17.20",
         "phenomenon-px": "^1.0.0",
         "vue": "^2.6.10"
     }

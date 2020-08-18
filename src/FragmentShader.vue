@@ -12,14 +12,26 @@
 </template>
 
 <script>
+import snoise from './libs/snoise'
+import rotate2d from './libs/rotate2d'
+import get from 'lodash/get'
 import FullCanvas from '@fuzzco/full-canvas'
 import init from './gl/init'
-import { vertex, fragment } from './libs/defaultShaders'
+import {
+    vertex as defaultVertex,
+    fragment as defaultFragment
+} from './libs/defaultShaders'
 import buildShaders from './gl/buildShaders'
 import buildPlane from './gl/buildPlane'
 
 export default {
     components: { 'full-canvas': FullCanvas },
+    props: {
+        uniforms: {
+            type: Object,
+            default: () => {}
+        }
+    },
     data() {
         return {
             gl: null
@@ -36,11 +48,31 @@ export default {
             const { gl } = init(canvas)
             this.gl = gl
 
+            // fetch user-defined shaders
+            const fragmentVNode = get(this.$slots, 'default', []).find(
+                h => get(h, 'data.attrs.type', '') === 'shader/fragment'
+            )
+            let fragment = get(fragmentVNode, 'elm.innerHTML', null)
+
+            // include external functions
+            fragment = fragment.replace('#include <snoise>', snoise)
+            fragment = fragment.replace('#include <rotate2d>', rotate2d)
+
             // build the desired shaders
-            const programInfo = buildShaders(this.gl, vertex, fragment)
+            const programInfo = buildShaders(
+                this.gl,
+                defaultVertex,
+                fragment || defaultFragment
+            )
 
             // build the plane where we'll render our shaders
             buildPlane(gl, programInfo)
+
+            // kick render loop
+            this.render()
+        },
+        render() {
+            console.log('render')
         }
     }
 }
