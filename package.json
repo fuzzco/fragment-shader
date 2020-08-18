@@ -1,6 +1,6 @@
 {
     "name": "@fuzzco/fragment-shader",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "description": "Start drawing fragment shaders right away.",
     "main": "dist/fragment-shader.common.js",
     "scripts": {
@@ -19,13 +19,14 @@
         "@babel/core": "^7.4.4",
         "@babel/preset-env": "^7.4.4",
         "@vue/cli-service": "^3.7.0",
-        "node-sass": "4.13.1",
+        "node-sass": "4.14.1",
         "sass-loader": "^7.1.0",
         "terser": "^3.17.0",
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
         "imagesloaded": "^4.1.4",
+        "is-obj": "2.0.0",
         "phenomenon-px": "^1.0.0",
         "vue": "^2.6.10"
     }
