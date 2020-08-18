@@ -1,6 +1,7 @@
+import * as mat4 from '../gl-matrix/mat4'
+
 // https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context
 export default function(gl, programInfo) {
-    const { mat4 } = require('gl-matrix')
 
     const buffers = initBuffers(gl)
 

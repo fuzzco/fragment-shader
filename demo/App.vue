@@ -4,11 +4,11 @@
             <fragment-shader>
                 <script type="shader/fragment">
                     precision highp float;
-                    // uniform vec2 uResolution;
+                    uniform vec2 uResolution;
 
                     void main() {
-                        // vec2 uv = gl_FragCoord.xy / uResolution.xy;
-                        gl_FragColor = vec4(1., 0.2, 0.2, 1.);
+                        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+                        gl_FragColor = vec4(uv.x, 0.2, 0.2, 1.);
                     }
                 </script>
             </fragment-shader>
