@@ -48,7 +48,7 @@ export default {
             const { gl } = init(canvas)
             this.gl = gl
 
-            // fetch user-defined shaders
+            // fetch user-defined fragment shader
             const fragmentVNode = get(this.$slots, 'default', []).find(
                 h => get(h, 'data.attrs.type', '') === 'shader/fragment'
             )
@@ -58,10 +58,16 @@ export default {
             fragment = fragment.replace('#include <snoise>', snoise)
             fragment = fragment.replace('#include <rotate2d>', rotate2d)
 
+            // fetch user-defined vertex shader
+            const vertexVNode = get(this.$slots, 'default', []).find(
+                h => get(h, 'data.attrs.type', '') === 'shader/vertex'
+            )
+            let vertex = get(vertexVNode, 'elm.innerHTML', null)
+
             // build the desired shaders
             const programInfo = buildShaders(
                 this.gl,
-                defaultVertex,
+                vertex || defaultVertex,
                 fragment || defaultFragment
             )
 
