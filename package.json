@@ -25,6 +25,8 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@fuzzco/full-canvas": "1.1.0",
+        "gl-matrix": "3.3.0",
         "imagesloaded": "^4.1.4",
         "is-obj": "2.0.0",
         "phenomenon-px": "^1.0.0",
