@@ -22,10 +22,6 @@ export default {
             type: Function,
             default: () => () => {}
         },
-        timescale: {
-            type: Number,
-            default: 1
-        },
         min: {
             type: Number,
             default: -100
