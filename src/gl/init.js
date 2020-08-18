@@ -4,7 +4,7 @@ export default function(canvas) {
 
     // Only continue if WebGL is available and working
     if (gl === null) {
-        console.log(
+        console.warn(
             'Unable to initialize WebGL. Your browser or machine may not support it.'
         )
         return

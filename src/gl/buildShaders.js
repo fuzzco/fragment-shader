@@ -17,7 +17,7 @@ export default function(gl, vsSource, fsSource) {
     // If creating the shader program failed, alert
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        alert(
+        console.warn(
             'Unable to initialize the shader program: ' +
                 gl.getProgramInfoLog(shaderProgram)
         )
@@ -63,7 +63,7 @@ function loadShader(gl, type, source) {
     // See if it compiled successfully
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert(
+        console.warn(
             'An error occurred compiling the shaders: ' +
                 gl.getShaderInfoLog(shader)
         )

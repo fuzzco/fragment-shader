@@ -39,6 +39,7 @@ export default {
             // build the desired shaders
             const programInfo = buildShaders(this.gl, vertex, fragment)
 
+            // build the plane where we'll render our shaders
             buildPlane(gl, programInfo)
         }
     }
