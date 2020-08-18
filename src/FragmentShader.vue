@@ -85,27 +85,39 @@ export default {
             this.render()
         },
         render() {
-            console.log('render')
-            this.time = Date.now() - this.lastTime
+            this.time += Date.now() - this.lastTime
             this.lastTime = Date.now()
 
             // build uniforms
-            // const toBuild = {
-            //     uTime: {
-            //         type: 'float',
-            //         value: this.time
-            //     },
-            //     uResolution: {
-            //         type: 'vec2',
-            //         value: [this.canvas.width, this.canvas.height]
-            //     },
-            //     ...this.uniforms
-            // }
-            //
-            // Object.keys(this.programInfo.uniformLocations).map(key => {
-            //     const uni = toBuild[key]
-            //     // this.gl[]
-            // })
+            const toBuild = {
+                uTime: {
+                    type: 'float',
+                    value: this.time
+                },
+                uResolution: {
+                    type: 'vec2',
+                    value: [this.canvas.width, this.canvas.height]
+                },
+                ...this.uniforms
+            }
+
+            Object.keys(toBuild).map(key => {
+                const uni = toBuild[key]
+                const uniformValueSetFunction =
+                    this.uniformMap[uni.type] ||
+                    this.gl[`uniform${uni.type}`] ||
+                    this.gl[uni.type]
+
+                if (!uniformValueSetFunction) {
+                    console.warn(`No uniform method for type ${uni.type}`)
+                    return
+                }
+
+                uniformValueSetFunction(
+                    this.gl.getUniformLocation(this.shaderProgram, key),
+                    uni.value
+                )
+            })
 
             buildPlane(this.gl, this.programInfo)
 
