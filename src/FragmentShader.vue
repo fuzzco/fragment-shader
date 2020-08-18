@@ -37,11 +37,13 @@ export default {
     },
     data() {
         return {
-            alive: true
+            alive: true,
+            startTime: 0
         }
     },
     mounted() {
-        if (!window.shader) window.shader = 1
+        // if (!window.shader) window.shader = 1
+        this.startTime = Date.now()
 
         // get the HTML of the first element in the default slot
         // to use as the shader
@@ -55,7 +57,7 @@ export default {
         const startingUniforms = {
             uTime: {
                 type: 'float',
-                value: 1.0
+                value: 0.0
             },
             uResolution: {
                 type: 'vec2',
@@ -67,7 +69,7 @@ export default {
         // render function
         const render = uniforms => {
             if (uniforms.uTime) {
-                uniforms.uTime.value += 0.01666 * this.timescale
+                uniforms.uTime.value = Date.now() - this.startTime
             }
             if (
                 uniforms.uResolution &&
